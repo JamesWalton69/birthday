@@ -1,0 +1,4 @@
+name = "Sharannya"
+DOB = 2010-12-01
+gender = female
+what belongs to me = sister
