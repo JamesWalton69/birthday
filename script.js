@@ -444,15 +444,15 @@ function startTypingAnimation() {
                 typingIndex++;
                 
                 // Variable typing speed for more realistic effect
-                let delay = 50;
+                let delay = 20;
                 if (letterContent[typingIndex - 1] === '.') {
-                    delay = 500; // Longer pause after periods
+                    delay = 300; // Longer pause after periods
                 } else if (letterContent[typingIndex - 1] === ',') {
-                    delay = 200; // Medium pause after commas
+                    delay = 150; // Medium pause after commas
                 } else if (letterContent[typingIndex - 1] === ' ') {
-                    delay = 30; // Shorter delay for spaces
+                    delay = 20; // Shorter delay for spaces
                 } else if (letterContent[typingIndex - 1] === '\n') {
-                    delay = 300; // Pause for line breaks
+                    delay = 200; // Pause for line breaks
                 }
                 
                 typingTimer = setTimeout(typeNextCharacter, delay);
