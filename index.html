@@ -1,136 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A Small Gift!!!</title>
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>A Special Birthday Gift</title>
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+
 </head>
+
 <body>
-    <!-- Welcome Section -->
-    <section id="welcome-section" class="section active">
-        <div class="container">
-            <div class="welcome-content">
-                <h1 class="glitter-text">🎉 Happy Birthday! 🎉</h1>
-                <div class="person-card">
-                    <div id="person-info">
-                        <h2 id="person-name">Loading...</h2>
-                        <div class="info-grid">
-                            <div class="info-item">
-                                <span class="label">Age:</span>
-                                <span id="person-age" class="value">--</span>
-                            </div>
-                            <div class="info-item">
-                                <span class="label">Relationship:</span>
-                                <span id="person-relationship" class="value">--</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <button id="start-celebration" class="btn btn--primary btn--large">
-                    🎂 Start Celebration 🎂
-                </button>
+<div id="moonlight"></div>
+<canvas id="stars-bg"></canvas>
+
+<!-- GOLD PARTICLES -->
+<canvas id="gold-particles"></canvas>
+
+<!-- WELCOME SECTION -->
+<section id="welcome-section" class="section active">
+    <div class="center-box fade-in">
+        <h1 class="gold-title">✨ Happy Birthday ✨</h1>
+
+        <div class="intro-info">
+            <h2 id="person-name" class="intro-name">Loading...</h2>
+            <p id="person-relationship" class="intro-rel">—</p>
+            <p id="person-age" class="intro-age">Age: —</p>
+        </div>
+
+        <button id="start-btn" class="gold-btn">Start Celebration 🎂</button>
+    </div>
+</section>
+<!-- CANDLE SECTION -->
+<section id="candle-section" class="section">
+    <div class="center-box fade-in">
+        <h2 class="gold-subtitle">Make a wish and blow the candle</h2>
+
+        <div class="candle-container">
+            <div class="candle">
+                <div id="flame" class="flame"></div>
+                <div class="wick"></div>
+                <div class="candle-body"></div>
             </div>
         </div>
-    </section>
 
-    <!-- Candle Section -->
-    <section id="candle-section" class="section">
-        <div class="container">
-            <div class="candle-content">
-                <h2>Make a wish and blow the candle!</h2>
-                <div class="candle-container">
-                    <div class="candle">
-                        <div class="flame" id="flame"></div>
-                        <div class="wick"></div>
-                        <div class="candle-body"></div>
-                    </div>
-                </div>
-                <p class="instruction">Click the flame or move your mouse over it to blow it out!</p>
-            </div>
+        <p class="instruction">Hover or tap near the flame ✨</p>
+    </div>
+</section>
+
+<!-- MAIN PHOTO SECTION -->
+<section id="main-photo-section" class="section">
+    <div class="center-box fade-in">
+        <div class="main-photo-frame glow-gold">
+            <img id="main-photo" src="" alt="main photo" />
         </div>
-    </section>
 
-    <!-- Main Photo Section -->
-    <section id="main-photo-section" class="section">
-        <div class="container">
-            <div class="main-photo-content">
-                <div class="photo-frame">
-                    <div class="sparkles"></div>
-                    <img id="main-photo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'%3E%3Crect width='300' height='300' fill='%23fca5a5'/%3E%3Ctext x='150' y='120' text-anchor='middle' font-family='Arial' font-size='24' fill='%23dc2626'%3EPic1.jpg%3C/text%3E%3Ctext x='150' y='150' text-anchor='middle' font-family='Arial' font-size='16' fill='%23991b1b'%3EMain Birthday%3C/text%3E%3Ctext x='150' y='170' text-anchor='middle' font-family='Arial' font-size='16' fill='%23991b1b'%3EPhoto%3C/text%3E%3Ctext x='150' y='220' text-anchor='middle' font-family='Arial' font-size='48' fill='%23dc2626'%3E🎂%3C/text%3E%3C/svg%3E" alt="Birthday Person" />
-                </div>
-                <h2 id="birthday-message">Happy Birthday! 🎊</h2>
-                <p class="wish-text">Hope your day is filled with happiness and joy!</p>
-            </div>
-        </div>
-    </section>
+        <h2 class="gold-title" id="birthday-title">Happy Birthday!</h2>
 
-    <!-- Photo Collage Section -->
-    <section id="collage-section" class="section">
-        <div class="container">
-            <div class="collage-content">
-                <h2>Enjoy the gallery 📸</h2>
-                <div class="photo-carousel">
-                    <div class="carousel-container">
-                        <div class="photo-item active">
-                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250' viewBox='0 0 250 250'%3E%3Crect width='250' height='250' fill='%23fca5a5'/%3E%3Ctext x='125' y='110' text-anchor='middle' font-family='Arial' font-size='20' fill='%23dc2626'%3EPic2.jpg%3C/text%3E%3Ctext x='125' y='135' text-anchor='middle' font-family='Arial' font-size='14' fill='%23991b1b'%3EMemory 1%3C/text%3E%3Ctext x='125' y='170' text-anchor='middle' font-family='Arial' font-size='36' fill='%23dc2626'%3E📷%3C/text%3E%3C/svg%3E" alt="Memory 1" />
-                        </div>
-                        <div class="photo-item">
-                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250' viewBox='0 0 250 250'%3E%3Crect width='250' height='250' fill='%23fca5a5'/%3E%3Ctext x='125' y='110' text-anchor='middle' font-family='Arial' font-size='20' fill='%23dc2626'%3EPic3.jpg%3C/text%3E%3Ctext x='125' y='135' text-anchor='middle' font-family='Arial' font-size='14' fill='%23991b1b'%3EMemory 2%3C/text%3E%3Ctext x='125' y='170' text-anchor='middle' font-family='Arial' font-size='36' fill='%23dc2626'%3E🌟%3C/text%3E%3C/svg%3E" alt="Memory 2" />
-                        </div>
-                        <div class="photo-item">
-                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250' viewBox='0 0 250 250'%3E%3Crect width='250' height='250' fill='%23fca5a5'/%3E%3Ctext x='125' y='110' text-anchor='middle' font-family='Arial' font-size='20' fill='%23dc2626'%3EPic4.jpg%3C/text%3E%3Ctext x='125' y='135' text-anchor='middle' font-family='Arial' font-size='14' fill='%23991b1b'%3EMemory 3%3C/text%3E%3Ctext x='125' y='170' text-anchor='middle' font-family='Arial' font-size='36' fill='%23dc2626'%3E💝%3C/text%3E%3C/svg%3E" alt="Memory 3" />
-                        </div>
-                        <div class="photo-item">
-                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250' viewBox='0 0 250 250'%3E%3Crect width='250' height='250' fill='%23fca5a5'/%3E%3Ctext x='125' y='110' text-anchor='middle' font-family='Arial' font-size='20' fill='%23dc2626'%3EPic5.jpg%3C/text%3E%3Ctext x='125' y='135' text-anchor='middle' font-family='Arial' font-size='14' fill='%23991b1b'%3EMemory 4%3C/text%3E%3Ctext x='125' y='170' text-anchor='middle' font-family='Arial' font-size='36' fill='%23dc2626'%3E🎈%3C/text%3E%3C/svg%3E" alt="Memory 4" />
-                        </div>
-                        <div class="photo-item">
-                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250' viewBox='0 0 250 250'%3E%3Crect width='250' height='250' fill='%23fca5a5'/%3E%3Ctext x='125' y='110' text-anchor='middle' font-family='Arial' font-size='20' fill='%23dc2626'%3EPic6.jpg%3C/text%3E%3Ctext x='125' y='135' text-anchor='middle' font-family='Arial' font-size='14' fill='%23991b1b'%3EMemory 5%3C/text%3E%3Ctext x='125' y='170' text-anchor='middle' font-family='Arial' font-size='36' fill='%23dc2626'%3E🌺%3C/text%3E%3C/svg%3E" alt="Memory 5" />
-                        </div>
-                        <div class="photo-item">
-                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250' viewBox='0 0 250 250'%3E%3Crect width='250' height='250' fill='%23fca5a5'/%3E%3Ctext x='125' y='110' text-anchor='middle' font-family='Arial' font-size='20' fill='%23dc2626'%3EPic7.jpg%3C/text%3E%3Ctext x='125' y='135' text-anchor='middle' font-family='Arial' font-size='14' fill='%23991b1b'%3EMemory 6%3C/text%3E%3Ctext x='125' y='170' text-anchor='middle' font-family='Arial' font-size='36' fill='%23dc2626'%3E🎪%3C/text%3E%3C/svg%3E" alt="Memory 6" />
-                        </div>
-                        <div class="photo-item">
-                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250' viewBox='0 0 250 250'%3E%3Crect width='250' height='250' fill='%23fca5a5'/%3E%3Ctext x='125' y='110' text-anchor='middle' font-family='Arial' font-size='20' fill='%23dc2626'%3EPic8.jpg%3C/text%3E%3Ctext x='125' y='135' text-anchor='middle' font-family='Arial' font-size='14' fill='%23991b1b'%3EMemory 7%3C/text%3E%3Ctext x='125' y='170' text-anchor='middle' font-family='Arial' font-size='36' fill='%23dc2626'%3E🎭%3C/text%3E%3C/svg%3E" alt="Memory 7" />
-                        </div>
-                        <div class="photo-item">
-                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250' viewBox='0 0 250 250'%3E%3Crect width='250' height='250' fill='%23fca5a5'/%3E%3Ctext x='125' y='110' text-anchor='middle' font-family='Arial' font-size='20' fill='%23dc2626'%3EPic9.jpg%3C/text%3E%3Ctext x='125' y='135' text-anchor='middle' font-family='Arial' font-size='14' fill='%23991b1b'%3EMemory 8%3C/text%3E%3Ctext x='125' y='170' text-anchor='middle' font-family='Arial' font-size='36' fill='%23dc2626'%3E🎨%3C/text%3E%3C/svg%3E" alt="Memory 8" />
-                        </div>
-                        <div class="photo-item">
-                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250' viewBox='0 0 250 250'%3E%3Crect width='250' height='250' fill='%23fca5a5'/%3E%3Ctext x='125' y='110' text-anchor='middle' font-family='Arial' font-size='20' fill='%23dc2626'%3EPic10.jpg%3C/text%3E%3Ctext x='125' y='135' text-anchor='middle' font-family='Arial' font-size='14' fill='%23991b1b'%3EMemory 9%3C/text%3E%3Ctext x='125' y='170' text-anchor='middle' font-family='Arial' font-size='36' fill='%23dc2626'%3E🌈%3C/text%3E%3C/svg%3E" alt="Memory 9" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+        <button id="go-gallery" class="gold-btn">Next →</button>
+    </div>
+</section>
 
-    <!-- Letter Section -->
-    <section id="letter-section" class="section">
-        <div class="container">
-            <div class="letter-content">
-                <h2>A Message for You 💌</h2>
-                <div class="letter-paper">
-                    <div id="typed-letter" class="letter-text"></div>
-                    <span id="typing-cursor" class="cursor">|</span>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- GALLERY SECTION -->
+<section id="gallery-section" class="section">
 
-    <!-- Background Music -->
-    <audio id="background-music" loop>
-        <source src="assets/music.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
+    <h2 class="gold-title gallery-header">Memories Gallery 📸</h2>
 
-    <!-- Music Control -->
-    <div id="music-control" class="music-control hidden">
-        <button id="music-toggle" class="music-btn">
-            🎵
-        </button>
+    <div class="carousel-container">
+        <div id="carousel" class="carousel"></div>
     </div>
 
-    <script src="script.js"></script>
+    <button id="open-letter" class="gold-btn center">Open Letter 💌</button>
+</section>
+<!-- LETTER SECTION -->
+<section id="letter-section" class="section">
+
+    <div class="envelope-container">
+
+        <div id="envelope" class="envelope fly-in">
+            <div class="envelope-top"></div>
+            <div class="envelope-bottom"></div>
+        </div>
+
+        <div id="letter" class="letter hidden">
+            <pre id="typed-letter"></pre>
+            <span id="cursor">|</span>
+        </div>
+
+    </div>
+
+</section>
+<div id="petals-container"></div>
+
+
+<!-- MUSIC -->
+<audio id="birthday-music" src="assets/music.mp3"></audio>
+<!-- MUSIC CONTROLS -->
+<div id="music-controls" class="music-controls hidden">
+    <button id="music-toggle">⏵</button>
+</div>
+<div id="equalizer" class="equalizer hidden">
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+</div>
+
+
+<script src="script.js"></script>
 </body>
 </html>
