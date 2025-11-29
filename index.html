@@ -1,26 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A Special Birthday Gift</title>
-    <link rel="stylesheet" href="style.css" />
 
-    <!-- Confetti CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;500;600&display=swap" rel="stylesheet">
 
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 
 <body>
+<div class="bg-halo"></div>
+
+<!-- CINEMATIC OVERLAYS -->
 <div id="moonlight"></div>
 <canvas id="stars-bg"></canvas>
-
-<!-- GOLD PARTICLES -->
 <canvas id="gold-particles"></canvas>
+<div id="petals-container"></div>
 
-<!-- WELCOME SECTION -->
-<section id="welcome-section" class="section active">
+<!-- WELCOME SECTION (White + Gold) -->
+<section id="welcome-section" class="section active white-theme">
     <div class="center-box fade-in">
         <h1 class="gold-title">✨ Happy Birthday ✨</h1>
 
@@ -30,11 +35,12 @@
             <p id="person-age" class="intro-age">Age: —</p>
         </div>
 
-        <button id="start-btn" class="gold-btn">Start Celebration 🎂</button>
+        <button id="start-btn" class="gold-btn">Start 🎉</button>
     </div>
 </section>
-<!-- CANDLE SECTION -->
-<section id="candle-section" class="section">
+
+<!-- CANDLE SECTION (White + Gold) -->
+<section id="candle-section" class="section white-theme">
     <div class="center-box fade-in">
         <h2 class="gold-subtitle">Make a wish and blow the candle</h2>
 
@@ -50,23 +56,27 @@
     </div>
 </section>
 
-<!-- MAIN PHOTO SECTION -->
-<section id="main-photo-section" class="section">
+<!-- MAIN PHOTO SECTION (White + Gold) -->
+<section id="main-photo-section" class="section white-theme">
     <div class="center-box fade-in">
         <div class="main-photo-frame glow-gold">
-            <img id="main-photo" src="" alt="main photo" />
+            <img id="main-photo" src="" alt="main photo">
         </div>
 
-        <h2 class="gold-title" id="birthday-title">Happy Birthday!</h2>
+        <h2 class="gold-title" id="birthday-title">For You</h2>
 
         <button id="go-gallery" class="gold-btn">Next →</button>
     </div>
 </section>
 
-<!-- GALLERY SECTION -->
-<section id="gallery-section" class="section">
+<!-- GALLERY SECTION (Black + Gold Cinematic Vertical Gallery) -->
+<section id="gallery-section" class="section black-theme">
+    
+    <!-- Top & bottom fade -->
+    <div class="gallery-fade top"></div>
+    <div class="gallery-fade bottom"></div>
 
-    <h2 class="gold-title gallery-header">Memories Gallery 📸</h2>
+    <h2 class="gold-title gallery-header">Memories 📸</h2>
 
     <div class="carousel-container">
         <div id="carousel" class="carousel"></div>
@@ -74,33 +84,34 @@
 
     <button id="open-letter" class="gold-btn center">Open Letter 💌</button>
 </section>
-<!-- LETTER SECTION -->
-<section id="letter-section" class="section">
+
+<!-- LETTER SECTION (White + Gold Romance) -->
+<section id="letter-section" class="section white-theme letter-area">
 
     <div class="envelope-container">
-
+        <!-- Envelope -->
         <div id="envelope" class="envelope fly-in">
             <div class="envelope-top"></div>
             <div class="envelope-bottom"></div>
         </div>
 
+        <!-- Letter -->
         <div id="letter" class="letter hidden">
             <pre id="typed-letter"></pre>
             <span id="cursor">|</span>
         </div>
-
     </div>
-
 </section>
-<div id="petals-container"></div>
-
 
 <!-- MUSIC -->
 <audio id="birthday-music" src="assets/music.mp3"></audio>
+
 <!-- MUSIC CONTROLS -->
 <div id="music-controls" class="music-controls hidden">
     <button id="music-toggle">⏵</button>
 </div>
+
+<!-- MUSIC EQUALIZER -->
 <div id="equalizer" class="equalizer hidden">
     <div class="bar"></div>
     <div class="bar"></div>
@@ -108,8 +119,8 @@
     <div class="bar"></div>
     <div class="bar"></div>
 </div>
-
-
+<!-- SCRIPT -->
 <script src="script.js"></script>
+
 </body>
 </html>

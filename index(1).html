@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>A Special Birthday Gift</title>
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+<div id="moonlight"></div>
+<canvas id="stars-bg"></canvas>
+
+<!-- GOLD PARTICLES -->
+<canvas id="gold-particles"></canvas>
+
+<!-- WELCOME SECTION -->
+<section id="welcome-section" class="section active">
+    <div class="center-box fade-in">
+        <h1 class="gold-title">✨ Happy Birthday ✨</h1>
+
+        <div class="intro-info">
+            <h2 id="person-name" class="intro-name">Loading...</h2>
+            <p id="person-relationship" class="intro-rel">—</p>
+            <p id="person-age" class="intro-age">Age: —</p>
+        </div>
+
+        <button id="start-btn" class="gold-btn">Start Celebration 🎂</button>
+    </div>
+</section>
+<!-- CANDLE SECTION -->
+<section id="candle-section" class="section">
+    <div class="center-box fade-in">
+        <h2 class="gold-subtitle">Make a wish and blow the candle</h2>
+
+        <div class="candle-container">
+            <div class="candle">
+                <div id="flame" class="flame"></div>
+                <div class="wick"></div>
+                <div class="candle-body"></div>
+            </div>
+        </div>
+
+        <p class="instruction">Hover or tap near the flame ✨</p>
+    </div>
+</section>
+
+<!-- MAIN PHOTO SECTION -->
+<section id="main-photo-section" class="section">
+    <div class="center-box fade-in">
+        <div class="main-photo-frame glow-gold">
+            <img id="main-photo" src="" alt="main photo" />
+        </div>
+
+        <h2 class="gold-title" id="birthday-title">Happy Birthday!</h2>
+
+        <button id="go-gallery" class="gold-btn">Next →</button>
+    </div>
+</section>
+
+<!-- GALLERY SECTION -->
+<section id="gallery-section" class="section">
+
+    <h2 class="gold-title gallery-header">Memories Gallery 📸</h2>
+
+    <div class="carousel-container">
+        <div id="carousel" class="carousel"></div>
+    </div>
+
+    <button id="open-letter" class="gold-btn center">Open Letter 💌</button>
+</section>
+<!-- LETTER SECTION -->
+<section id="letter-section" class="section">
+
+    <div class="envelope-container">
+
+        <div id="envelope" class="envelope fly-in">
+            <div class="envelope-top"></div>
+            <div class="envelope-bottom"></div>
+        </div>
+
+        <div id="letter" class="letter hidden">
+            <pre id="typed-letter"></pre>
+            <span id="cursor">|</span>
+        </div>
+
+    </div>
+
+</section>
+<div id="petals-container"></div>
+
+
+<!-- MUSIC -->
+<audio id="birthday-music" src="assets/music.mp3"></audio>
+<!-- MUSIC CONTROLS -->
+<div id="music-controls" class="music-controls hidden">
+    <button id="music-toggle">⏵</button>
+</div>
+<div id="equalizer" class="equalizer hidden">
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+</div>
+
+
+<script src="script.js"></script>
+</body>
+</html>

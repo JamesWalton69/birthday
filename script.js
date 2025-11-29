@@ -1,6 +1,7 @@
 /* ============================================================
-   GLOBAL VARIABLES
+   GLOBALS
 ============================================================ */
+
 const sections = [
     "welcome-section",
     "candle-section",
@@ -22,7 +23,7 @@ const imageList = [
 ];
 
 /* ============================================================
-   SECTION SWITCHER
+   SECTION SWITCHING
 ============================================================ */
 function showSection(num) {
     document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
@@ -31,7 +32,7 @@ function showSection(num) {
 }
 
 /* ============================================================
-   DYNAMIC DATA LOADING
+   LOAD PERSON INFO
 ============================================================ */
 async function loadPersonInfo() {
     try {
@@ -41,17 +42,15 @@ async function loadPersonInfo() {
 
         lines.forEach(line => {
             let [key, val] = line.split("=");
-            if (!key || !val) return;
-            personData[key.trim().toLowerCase()] = val.trim();
+            if (key && val)
+                personData[key.trim().toLowerCase()] = val.trim();
         });
 
         document.getElementById("person-name").textContent =
-            personData["name"] || "Friend";
+            personData["name"] || "Someone Special";
 
         document.getElementById("person-relationship").textContent =
-            personData["what belongs to me"]?.toUpperCase() ||
-            personData["relationship"] ||
-            "Friend";
+            personData["relationship"] || "Loved One";
 
         if (personData["dob"]) {
             let age = calcAge(personData["dob"]);
@@ -59,21 +58,16 @@ async function loadPersonInfo() {
         }
 
     } catch (err) {
-        console.log("Error loading data.txt", err);
-        document.getElementById("person-name").textContent = "Friend";
-        document.getElementById("person-relationship").textContent = "Friend";
-        document.getElementById("person-age").textContent = "Age: —";
+        console.log("Error loading data:", err);
     }
 }
 
 function calcAge(d) {
     let birth = new Date(d);
-    let today = new Date();
-    let age = today.getFullYear() - birth.getFullYear();
-
-    let m = today.getMonth() - birth.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
-
+    let now = new Date();
+    let age = now.getFullYear() - birth.getFullYear();
+    let m = now.getMonth() - birth.getMonth();
+    if (m < 0 || (m === 0 && now.getDate() < birth.getDate())) age--;
     return age;
 }
 
@@ -84,53 +78,52 @@ async function loadLetter() {
     try {
         const res = await fetch("assets/letter.txt");
         letterText = await res.text();
-    } catch (err) {
-        console.log("Error loading letter.txt", err);
-        letterText = "Happy Birthday!";
+    } catch {
+        letterText = "Happy Birthday! ❤️";
     }
 }
+
 /* ============================================================
-   LOAD IMAGES INTO APPLE CAROUSEL
+   LOAD IMAGES (VERTICAL GALLERY)
 ============================================================ */
 async function loadImages() {
     const carousel = document.getElementById("carousel");
 
-    imageList.forEach((imgName) => {
+    imageList.forEach(imgName => {
         const item = document.createElement("div");
         item.className = "carousel-item small";
 
         item.innerHTML = `
             <img src="assets/${imgName}" draggable="false">
         `;
-
         carousel.appendChild(item);
     });
 
     document.getElementById("main-photo").src = "assets/front.jpg";
 
-    setupCarouselScaling();
-    autoScrollCarousel();
+    setupVerticalScaling();
+    autoCenterOnStop();
 }
 
 /* ============================================================
-   APPLE CAROUSEL SCALING
+   VERTICAL CAROUSEL SCALING
 ============================================================ */
-function setupCarouselScaling() {
+function setupVerticalScaling() {
     const container = document.querySelector(".carousel-container");
     const items = document.querySelectorAll(".carousel-item");
 
     function update() {
-        const center = container.scrollLeft + container.offsetWidth / 2;
+        const center = container.scrollTop + container.clientHeight / 2;
 
         items.forEach(item => {
             const rect = item.getBoundingClientRect();
-            const itemCenter = rect.left + rect.width / 2;
-            const dist = Math.abs(itemCenter - window.innerWidth / 2);
+            const itemCenter = rect.top + rect.height / 2;
+            const dist = Math.abs(itemCenter - window.innerHeight / 2);
 
-            if (dist < 140) {
+            if (dist < 120) {
                 item.classList.add("active");
                 item.classList.remove("medium", "small");
-            } else if (dist < 300) {
+            } else if (dist < 250) {
                 item.classList.add("medium");
                 item.classList.remove("active", "small");
             } else {
@@ -146,38 +139,91 @@ function setupCarouselScaling() {
 }
 
 /* ============================================================
-   AUTO-SCROLL (slow, smooth, aesthetic)
+   AUTO CENTER ON SCROLL STOP
 ============================================================ */
-function autoScrollCarousel() {
+function autoCenterOnStop() {
     const container = document.querySelector(".carousel-container");
+    let timeout;
 
-    let direction = 1;
-    setInterval(() => {
-        container.scrollLeft += direction * 1.2;
+    container.addEventListener("scroll", () => {
+        clearTimeout(timeout);
 
-        if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 5)
-            direction = -1;
+        timeout = setTimeout(() => {
+            const items = [...document.querySelectorAll(".carousel-item")];
+            let closest = null;
+            let minDist = Infinity;
 
-        if (container.scrollLeft <= 5)
-            direction = 1;
+            const centerY = window.innerHeight / 2;
 
-    }, 16); // 60fps
+            items.forEach(item => {
+                const rect = item.getBoundingClientRect();
+                const itemCenter = rect.top + rect.height / 2;
+                const dist = Math.abs(itemCenter - centerY);
+
+                if (dist < minDist) {
+                    minDist = dist;
+                    closest = item;
+                }
+            });
+
+            if (closest) {
+                closest.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
+            }
+
+        }, 200);
+    });
 }
 /* ============================================================
-   CANDLE BLOW LOGIC
+   AUTO SCROLL GALLERY (Slow, Cinematic)
+============================================================ */
+
+let autoScrollEnabled = true;
+
+function autoScrollGallery() {
+    const container = document.querySelector(".carousel-container");
+
+    function scrollStep() {
+        if (!autoScrollEnabled) return;
+        container.scrollTop += 0.4; // speed (slow)
+
+        requestAnimationFrame(scrollStep);
+    }
+
+    scrollStep();
+
+    // Stop when user interacts
+    container.addEventListener("mousedown", () => autoScrollEnabled = false);
+    container.addEventListener("touchstart", () => autoScrollEnabled = false);
+
+    // Resume after 2 seconds
+    container.addEventListener("mouseup", () => {
+        setTimeout(() => autoScrollEnabled = true, 2000);
+    });
+
+    container.addEventListener("touchend", () => {
+        setTimeout(() => autoScrollEnabled = true, 2000);
+    });
+}
+
+autoScrollGallery();
+
+/* ============================================================
+   CANDLE
 ============================================================ */
 const flame = document.getElementById("flame");
 
 function blowCandle() {
     if (flame.classList.contains("blown")) return;
-
     flame.classList.add("blown");
 
-    setTimeout(() => showSection(2), 800);
+    setTimeout(() => showSection(2), 700);
 }
 
-flame.addEventListener("click", blowCandle);
 flame.addEventListener("mouseover", blowCandle);
+flame.addEventListener("click", blowCandle);
 
 /* ============================================================
    BUTTON NAVIGATION
@@ -188,10 +234,12 @@ document.getElementById("start-btn").addEventListener("click", () => {
 
 document.getElementById("go-gallery").addEventListener("click", () => {
     showSection(3);
+    startMusic();
+    musicControls.classList.remove("hidden");
 });
 
 /* ============================================================
-   OPEN LETTER
+   ENVELOPE OPEN
 ============================================================ */
 document.getElementById("open-letter").addEventListener("click", () => {
     showSection(4);
@@ -202,15 +250,14 @@ document.getElementById("open-letter").addEventListener("click", () => {
         setTimeout(() => {
             document.getElementById("letter").classList.remove("hidden");
             startTyping();
-            startMusic();
             launchConfetti();
-        }, 800);
+        }, 900);
 
-    }, 600);
+    }, 500);
 });
 
 /* ============================================================
-   TYPING EFFECT + FLOATING HEARTS
+   TYPING EFFECT
 ============================================================ */
 function startTyping() {
     const output = document.getElementById("typed-letter");
@@ -222,13 +269,12 @@ function startTyping() {
     function type() {
         if (index < letterText.length) {
             output.textContent += letterText[index];
+            output.scrollTop = output.scrollHeight;  // auto scroll
             index++;
 
-            if (Math.random() < 0.1) spawnHearts();
-
             let delay = typingSpeed;
-            if (letterText[index - 1] === ".") delay = 250;
-            if (letterText[index - 1] === ",") delay = 120;
+            if (letterText[index - 1] === ".") delay = 260;
+            if (letterText[index - 1] === ",") delay = 140;
 
             setTimeout(type, delay);
         } else {
@@ -240,168 +286,35 @@ function startTyping() {
     type();
 }
 
-/* FLOATING HEARTS */
-function spawnHearts() {
-    const h = document.createElement("div");
-    h.textContent = "💛";
-    h.style.position = "fixed";
-    h.style.left = Math.random() * window.innerWidth + "px";
-    h.style.top = window.innerHeight + "px";
-    h.style.fontSize = (Math.random() * 20 + 20) + "px";
-    h.style.opacity = 0.7;
-    h.style.pointerEvents = "none";
-    h.style.transition = "transform 3s linear, opacity 3s linear";
-    document.body.appendChild(h);
-
-    setTimeout(() => {
-        h.style.transform = `translateY(-${window.innerHeight + 200}px)`;
-        h.style.opacity = 0;
-    }, 50);
-
-    setTimeout(() => h.remove(), 3000);
-}
 /* ============================================================
-   GOLD PARTICLE BACKGROUND
+   ROSE PETALS
 ============================================================ */
-const canvas = document.getElementById("gold-particles");
-const ctx = canvas.getContext("2d");
-let w, h;
-let particles = [];
-
-function resizeCanvas() {
-    w = canvas.width = window.innerWidth;
-    h = canvas.height = window.innerHeight;
-}
-resizeCanvas();
-window.addEventListener("resize", resizeCanvas);
-
-function createParticles() {
-    const count = 120;
-    particles = [];
-
-    for (let i = 0; i < count; i++) {
-        particles.push({
-            x: Math.random() * w,
-            y: Math.random() * h,
-            r: Math.random() * 2 + 1,
-            dx: (Math.random() - 0.5) * 0.3,
-            dy: (Math.random() - 0.5) * 0.3,
-            a: Math.random() * 0.5 + 0.3,
-        });
-    }
-}
-
-function drawParticles() {
-    ctx.clearRect(0, 0, w, h);
-
-    particles.forEach(p => {
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255,215,0,${p.a})`;
-        ctx.fill();
-
-        p.x += p.dx;
-        p.y += p.dy;
-
-        if (p.x < 0) p.x = w;
-        if (p.x > w) p.x = 0;
-        if (p.y < 0) p.y = h;
-        if (p.y > h) p.y = 0;
-    });
-
-    requestAnimationFrame(drawParticles);
-}
-
-createParticles();
-drawParticles();
-
-/* ============================================================
-   CONFETTI (when envelope opens)
-============================================================ */
-function launchConfetti() {
-    const duration = 2000;
-    const end = Date.now() + duration;
-
-    (function frame() {
-        confetti({
-            particleCount: 6,
-            startVelocity: 30,
-            spread: 360,
-            colors: ["#FFD700", "#FFF6C5", "#FDE68A"],
-            origin: { x: Math.random(), y: Math.random() * 0.3 }
-        });
-
-        if (Date.now() < end) requestAnimationFrame(frame);
-    })();
-}
-
-/* ============================================================
-   FIREWORKS (after typing)
-============================================================ */
-function startFireworks() {
-    const fwCanvas = document.createElement("canvas");
-    fwCanvas.style.position = "fixed";
-    fwCanvas.style.top = 0;
-    fwCanvas.style.left = 0;
-    fwCanvas.style.width = "100vw";
-    fwCanvas.style.height = "100vh";
-    fwCanvas.style.pointerEvents = "none";
-    fwCanvas.style.zIndex = 99999;
-    document.body.appendChild(fwCanvas);
-
-    const fctx = fwCanvas.getContext("2d");
-    fwCanvas.width = window.innerWidth;
-    fwCanvas.height = window.innerHeight;
-
-    let fwParticles = [];
-
-    function explode(x, y) {
-        for (let i = 0; i < 60; i++) {
-            fwParticles.push({
-                x, y,
-                dx: (Math.random() - 0.5) * 6,
-                dy: (Math.random() - 0.5) * 6,
-                r: Math.random() * 3 + 1,
-                life: 60
-            });
-        }
-    }
-
-    function render() {
-        fctx.clearRect(0, 0, fwCanvas.width, fwCanvas.height);
-
-        fwParticles.forEach((p, i) => {
-            fctx.beginPath();
-            fctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-            fctx.fillStyle = `rgba(255,215,0,${p.life / 60})`;
-            fctx.fill();
-
-            p.x += p.dx;
-            p.y += p.dy;
-            p.life--;
-
-            if (p.life <= 0) fwParticles.splice(i, 1);
-        });
-
-        requestAnimationFrame(render);
-    }
+function spawnPetals() {
+    const container = document.getElementById("petals-container");
 
     setInterval(() => {
-        explode(
-            Math.random() * fwCanvas.width,
-            Math.random() * fwCanvas.height * 0.6
-        );
-    }, 700);
+        const petal = document.createElement("div");
+        petal.classList.add("petal");
 
-    render();
+        petal.style.left = Math.random() * window.innerWidth + "px";
+        petal.style.animationDuration = (6 + Math.random() * 6) + "s";
+
+        container.appendChild(petal);
+        setTimeout(() => petal.remove(), 12000);
+    }, 500);
 }
+
+spawnPetals();
+
 /* ============================================================
    MUSIC
 ============================================================ */
-function startMusic() {
-    const music = document.getElementById("birthday-music");
-    music.volume = 0;
+const music = document.getElementById("birthday-music");
+const toggleBtn = document.getElementById("music-toggle");
+const musicControls = document.getElementById("music-controls");
 
+function startMusic() {
+    music.volume = 0;
     music.play().catch(()=>{});
 
     let vol = 0;
@@ -411,13 +324,6 @@ function startMusic() {
         if (vol >= 0.7) clearInterval(fade);
     }, 200);
 }
-
-/* ============================================================
-   MUSIC CONTROLS
-============================================================ */
-const music = document.getElementById("birthday-music");
-const toggleBtn = document.getElementById("music-toggle");
-const musicControls = document.getElementById("music-controls");
 
 toggleBtn.addEventListener("click", () => {
     if (music.paused) {
@@ -429,13 +335,8 @@ toggleBtn.addEventListener("click", () => {
     }
 });
 
-// Show controls once in gallery
-document.getElementById("go-gallery").addEventListener("click", () => {
-    musicControls.classList.remove("hidden");
-});
-
 /* ============================================================
-   GOLD EQUALIZER (audio reactive)
+   EQUALIZER (audio analyzer)
 ============================================================ */
 const eq = document.getElementById("equalizer");
 const bars = document.querySelectorAll(".equalizer .bar");
@@ -468,75 +369,90 @@ music.addEventListener("play", () => {
     animateEQ();
 });
 
-
 /* ============================================================
-   KEYBOARD NAVIGATION
+   CONFETTI
 ============================================================ */
-document.addEventListener("keydown", e => {
-    if (e.key === "ArrowRight" && currentSection < sections.length - 1)
-        showSection(currentSection + 1);
+function launchConfetti() {
+    const duration = 2000;
+    const end = Date.now() + duration;
 
-    if (e.key === "ArrowLeft" && currentSection > 0)
-        showSection(currentSection - 1);
-});
+    (function frame() {
+        confetti({
+            particleCount: 8,
+            startVelocity: 30,
+            spread: 360,
+            colors: ["#FFD700", "#FFF4B0", "#FDDA77"],
+            origin: { x: Math.random(), y: Math.random() * 0.3 }
+        });
 
-/* ============================================================
-   INIT (LOAD EVERYTHING)
-============================================================ */
-async function init() {
-    await loadPersonInfo();
-    await loadLetter();
-    await loadImages();
+        if (Date.now() < end) requestAnimationFrame(frame);
+    })();
 }
-init();
 
 /* ============================================================
-   FLOATING ROSE PETALS
+   FIREWORKS
 ============================================================ */
-function spawnPetals() {
-    const container = document.getElementById("petals-container");
+function startFireworks() {
+    const canvas = document.createElement("canvas");
+    canvas.style.position = "fixed";
+    canvas.style.top = 0;
+    canvas.style.left = 0;
+    canvas.style.width = "100vw";
+    canvas.style.height = "100vh";
+    canvas.style.pointerEvents = "none";
+    canvas.style.zIndex = 999999;
+
+    document.body.appendChild(canvas);
+
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let particles = [];
+
+    function explode(x, y) {
+        for (let i = 0; i < 55; i++) {
+            particles.push({
+                x, y,
+                dx: (Math.random() - 0.5) * 6,
+                dy: (Math.random() - 0.5) * 6,
+                r: Math.random() * 3 + 1,
+                life: 60
+            });
+        }
+    }
+
+    function render() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        particles.forEach((p, i) => {
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255,215,0,${p.life/60})`;
+            ctx.fill();
+
+            p.x += p.dx;
+            p.y += p.dy;
+            p.life--;
+
+            if (p.life <= 0) particles.splice(i, 1);
+        });
+
+        requestAnimationFrame(render);
+    }
 
     setInterval(() => {
-        const petal = document.createElement("div");
-        petal.classList.add("petal");
+        explode(
+            Math.random() * canvas.width,
+            Math.random() * canvas.height * 0.6
+        );
+    }, 700);
 
-        petal.style.left = Math.random() * window.innerWidth + "px";
-        petal.style.animationDuration = (6 + Math.random() * 6) + "s";
-
-        container.appendChild(petal);
-
-        setTimeout(() => petal.remove(), 12000);
-    }, 500);
+    render();
 }
 
-spawnPetals();
-
 /* ============================================================
-   MOUSE HEART TRAIL
-============================================================ */
-document.addEventListener("mousemove", e => {
-    const heart = document.createElement("div");
-    heart.textContent = "❤️";
-    heart.style.position = "fixed";
-    heart.style.left = e.clientX + "px";
-    heart.style.top = e.clientY + "px";
-    heart.style.fontSize = "18px";
-    heart.style.opacity = 1;
-    heart.style.transition = "all 0.9s ease-out";
-    heart.style.pointerEvents = "none";
-    heart.style.zIndex = 9999;
-
-    document.body.appendChild(heart);
-
-    setTimeout(() => {
-        heart.style.transform = "translateY(-20px)";
-        heart.style.opacity = 0;
-    }, 50);
-
-    setTimeout(() => heart.remove(), 900);
-});
-/* ============================================================
-   STAR CONSTELLATION BACKGROUND
+   STAR CONSTELLATIONS
 ============================================================ */
 const stars = document.getElementById("stars-bg");
 const sctx = stars.getContext("2d");
@@ -576,3 +492,87 @@ function drawStars() {
 }
 
 drawStars();
+
+/* ============================================================
+   MOONLIGHT BACKGROUND - STATIC
+============================================================ */
+
+
+
+
+/* ============================================================
+   GOLD PARTICLES
+============================================================ */
+const goldCanvas = document.getElementById("gold-particles");
+const gctx = goldCanvas.getContext("2d");
+let gw, gh;
+let gParticles = [];
+
+function resizeGold() {
+    gw = goldCanvas.width = window.innerWidth;
+    gh = goldCanvas.height = window.innerHeight;
+}
+resizeGold();
+window.addEventListener("resize", resizeGold);
+
+function createGoldParticles() {
+    const count = 60;
+    gParticles = [];
+
+    for (let i = 0; i < count; i++) {
+        gParticles.push({
+            x: Math.random() * gw,
+            y: Math.random() * gh,
+            r: Math.random() * 2 + 1,
+            dx: (Math.random() - 0.5) * 0.4,
+            dy: (Math.random() - 0.5) * 0.4,
+            a: Math.random() * 0.5 + 0.3
+        });
+    }
+}
+
+function drawGold() {
+    gctx.clearRect(0, 0, gw, gh);
+
+    gParticles.forEach(p => {
+        gctx.beginPath();
+        gctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        gctx.fillStyle = `rgba(255,215,0,${p.a})`;
+        gctx.fill();
+
+        p.x += p.dx;
+        p.y += p.dy;
+
+        if (p.x < 0) p.x = gw;
+        if (p.x > gw) p.x = 0;
+        if (p.y < 0) p.y = gh;
+        if (p.y > gh) p.y = 0;
+    });
+
+    requestAnimationFrame(drawGold);
+}
+
+createGoldParticles();
+drawGold();
+
+/* ============================================================
+   INIT
+============================================================ */
+async function init() {
+    await loadPersonInfo();
+    await loadLetter();
+    await loadImages();
+}
+init();
+/* ============================================================
+   HEART MOUSE TRAIL
+============================================================ */
+document.addEventListener("mousemove", (e) => {
+    const h = document.createElement("div");
+    h.className = "heart";
+    h.style.left = e.clientX + "px";
+    h.style.top = e.clientY + "px";
+
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 1300);
+});
