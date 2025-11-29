@@ -689,3 +689,44 @@ if (bokeh) {
 
     drawBokeh();
 }
+/* ============================================================
+   HOLD TO SCROLL THE GALLERY
+============================================================ */
+
+/* ============================================================
+   GALLERY SCROLL BUTTON (WORKING VERSION)
+============================================================ */
+
+(function () {
+    const btn = document.getElementById("scroll-gallery");
+    const container = document.querySelector("#gallery-section .carousel-container");
+
+    let scrollInterval = null;
+
+    function startScrolling() {
+        stopScrolling();
+        scrollInterval = setInterval(() => {
+            container.scrollTop += 3; // speed
+        }, 10);
+    }
+
+    function stopScrolling() {
+        if (scrollInterval) {
+            clearInterval(scrollInterval);
+            scrollInterval = null;
+        }
+    }
+
+    btn.addEventListener("mousedown", startScrolling);
+    btn.addEventListener("mouseup", stopScrolling);
+    btn.addEventListener("mouseleave", stopScrolling);
+
+    btn.addEventListener("touchstart", (e) => {
+        e.preventDefault();
+        startScrolling();
+    });
+
+    btn.addEventListener("touchend", stopScrolling);
+})();
+
+

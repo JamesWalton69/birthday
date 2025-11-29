@@ -272,6 +272,7 @@ img, button {
 
 .carousel-item {
     width: 240px;
+    min-height: 75vh;
     height: 330px;
     scroll-snap-align: center;
     opacity: 0;
@@ -332,9 +333,10 @@ img, button {
 /* Devices narrower than 1024px = phones + tablets */
 @media (max-width: 1024px) {
     .carousel-container {
-        height: 100vh !important; /* full screen height */
-        padding-top: 90px;       /* keep "Memories" visible */
-        padding-bottom: 140px;   /* space for NEXT button */
+       height: calc(100vh - 140px) !important; /* space for top & button */
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        margin-top: 90px; /* pushes content down below header */
     }
 
     #gallery-section {
@@ -553,6 +555,38 @@ img, button {
     pointer-events: none;
     z-index: 4;
 }
+.scroll-btn {
+    position: fixed;
+    bottom: 110px;
+    right: 20px;
+    background: linear-gradient(135deg, #ff3b3b, #d4af37);
+    color: white;
+    font-weight: 700;
+    padding: 14px 22px;
+    border: none;
+    border-radius: 14px;
+    box-shadow: 0 0 16px rgba(212,175,55,0.5);
+    cursor: pointer;
+    font-size: 1.1rem;
+
+    z-index: 999999999999999 !important;  /* FIX */
+    pointer-events: auto !important;       /* FIX */
+}
+#bokeh-bg,
+.gallery-fade,
+#stars-bg,
+#gold-particles,
+#petals-container,
+.bg-halo {
+    pointer-events: none !important;
+}
+
+
+.scroll-btn:active {
+    transform: scale(0.94);
+    opacity: 1;
+}
+
 
 .petal {
     position: absolute;
