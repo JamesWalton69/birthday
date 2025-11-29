@@ -182,33 +182,77 @@ function autoCenterOnStop() {
 
 let autoScrollEnabled = true;
 
+/* ============================================================
+   UNIVERSAL AUTO SCROLL (Laptop + Mobile + Touch)
+============================================================ */
 function autoScrollGallery() {
     const container = document.querySelector(".carousel-container");
+    let autoScroll = true;
+    let manualTimeout;
 
-    function scrollStep() {
-        if (!autoScrollEnabled) return;
-        container.scrollTop += 0.4; // speed (slow)
+    function step() {
+        if (autoScroll) {
+            container.scrollTop += 0.6;
+        }
+        requestAnimationFrame(step);
+    }
+    step();
 
-        requestAnimationFrame(scrollStep);
+    function pause() {
+        autoScroll = false;
+        clearTimeout(manualTimeout);
+
+        manualTimeout = setTimeout(() => {
+            autoScroll = true;
+        }, 2000);
     }
 
-    scrollStep();
+    // laptop mouse wheel / touchpad
+    container.addEventListener("wheel", pause, { passive: true });
 
-    // Stop when user interacts
-    container.addEventListener("mousedown", () => autoScrollEnabled = false);
-    container.addEventListener("touchstart", () => autoScrollEnabled = false);
-
-    // Resume after 2 seconds
-    container.addEventListener("mouseup", () => {
-        setTimeout(() => autoScrollEnabled = true, 2000);
+    // laptop mouse drag
+    container.addEventListener("mousedown", pause);
+    container.addEventListener("mousemove", (e) => {
+        if (e.buttons === 1) pause();
     });
+    container.addEventListener("mouseup", pause);
 
-    container.addEventListener("touchend", () => {
-        setTimeout(() => autoScrollEnabled = true, 2000);
-    });
+    // mobile touch drag
+    container.addEventListener("touchstart", pause, { passive: true });
+    container.addEventListener("touchmove", pause, { passive: true });
+    container.addEventListener("touchend", pause);
 }
 
 autoScrollGallery();
+/* ============================================================
+   PARALLAX TILT BASED ON SCROLL DIRECTION
+============================================================ */
+function setupParallaxTilt() {
+    const container = document.querySelector(".carousel-container");
+    let lastY = container.scrollTop;
+
+    container.addEventListener("scroll", () => {
+        const items = document.querySelectorAll(".carousel-item");
+        const dir = container.scrollTop - lastY > 0 ? "down" : "up";
+
+        items.forEach(item => {
+            item.classList.remove("tilt-left", "tilt-right");
+            if (dir === "down") item.classList.add("tilt-right");
+            else item.classList.add("tilt-left");
+        });
+
+        lastY = container.scrollTop;
+
+        // Remove tilt when user stops scrolling
+        clearTimeout(window._tiltTimeout);
+        window._tiltTimeout = setTimeout(() => {
+            items.forEach(item => item.classList.remove("tilt-left", "tilt-right"));
+        }, 300);
+    });
+}
+
+setTimeout(setupParallaxTilt, 1200);
+
 
 /* ============================================================
    CANDLE
@@ -576,3 +620,72 @@ document.addEventListener("mousemove", (e) => {
     document.body.appendChild(h);
     setTimeout(() => h.remove(), 1300);
 });
+/* ============================================================
+   SCROLL FADE (CINEMATIC)
+============================================================ */
+function setupScrollFade() {
+    const items = document.querySelectorAll(".carousel-item");
+
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && entry.intersectionRatio > 0.55) {
+                entry.target.classList.add("visible");
+                entry.target.classList.remove("fading");
+            } else if (entry.isIntersecting) {
+                entry.target.classList.add("fading");
+                entry.target.classList.remove("visible");
+            } else {
+                entry.target.classList.remove("visible", "fading");
+            }
+        });
+    }, {
+        root: document.querySelector(".carousel-container"),
+        threshold: [0, 0.55, 1]
+    });
+
+    items.forEach(item => observer.observe(item));
+}
+
+setTimeout(setupScrollFade, 800); // run after images load
+/* ============================================================
+   BOKEH PARTICLES (Dreamy Background)
+============================================================ */
+const bokeh = document.getElementById("bokeh-bg");
+if (bokeh) {
+    const bctx = bokeh.getContext("2d");
+    bokeh.width = window.innerWidth;
+    bokeh.height = window.innerHeight;
+
+    let bParticles = [];
+    for (let i = 0; i < 35; i++) {
+        bParticles.push({
+            x: Math.random() * bokeh.width,
+            y: Math.random() * bokeh.height,
+            r: Math.random() * 8 + 4,
+            dx: (Math.random() - 0.5) * 0.3,
+            dy: (Math.random() - 0.5) * 0.3,
+            a: Math.random() * 0.35 + 0.15
+        });
+    }
+
+    function drawBokeh() {
+        bctx.clearRect(0, 0, bokeh.width, bokeh.height);
+        bParticles.forEach(p => {
+            bctx.beginPath();
+            bctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            bctx.fillStyle = `rgba(255, 230, 180, ${p.a})`;
+            bctx.fill();
+
+            p.x += p.dx;
+            p.y += p.dy;
+
+            if (p.x < -20) p.x = bokeh.width + 20;
+            if (p.x > bokeh.width + 20) p.x = -20;
+            if (p.y < -20) p.y = bokeh.height + 20;
+            if (p.y > bokeh.height + 20) p.y = -20;
+        });
+        requestAnimationFrame(drawBokeh);
+    }
+
+    drawBokeh();
+}

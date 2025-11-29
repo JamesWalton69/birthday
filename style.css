@@ -256,6 +256,10 @@ img, button {
     scroll-snap-type: y mandatory;
     padding-bottom: 30px;
 }
+.carousel-container {
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+}
 
 .carousel-container::-webkit-scrollbar { width: 0; }
 
@@ -291,6 +295,18 @@ img, button {
     object-fit: cover;
 }
 
+#stars-bg,
+#gold-particles,
+#petals-container,
+#moonlight,
+.bg-halo {
+    pointer-events: none !important;
+}
+#open-letter {
+    margin-top: 25px;
+    margin-bottom: 20px;
+}
+
 /* ACTIVE ITEM (centered) */
 .carousel-item.active {
     transform: scale(1.12);
@@ -307,6 +323,62 @@ img, button {
 .carousel-item.small {
     transform: scale(0.9);
     filter: brightness(0.55);
+}
+
+/* ============================================================
+   FULLSCREEN GALLERY ON PHONES/TABLETS (NOT LAPTOPS)
+============================================================ */
+
+/* Devices narrower than 1024px = phones + tablets */
+@media (max-width: 1024px) {
+    .carousel-container {
+        height: 100vh !important; /* full screen height */
+        padding-top: 90px;       /* keep "Memories" visible */
+        padding-bottom: 140px;   /* space for NEXT button */
+    }
+
+    #gallery-section {
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+
+    .gallery-header {
+        margin-top: 40px;
+        font-size: 2.4rem;
+    }
+
+    #open-letter {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 999;
+    }
+}
+@media (max-width: 1024px) {
+    .carousel-item {
+        width: 85vw;      /* fill most of screen width */
+        height: 65vh;     /* large clean portrait box */
+    }
+}
+
+/* Scroll Fade & Focus Effect */
+.carousel-item {
+    opacity: 0.3;
+    transform: scale(0.85);
+    transition: opacity 0.45s ease, transform 0.45s ease, filter 0.45s ease;
+}
+
+.carousel-item.visible {
+    opacity: 1;
+    transform: scale(1);
+    filter: brightness(1) drop-shadow(0 0 18px rgba(212,175,55,0.4));
+}
+
+.carousel-item.fading {
+    opacity: 0.4;
+    transform: scale(0.9);
+    filter: brightness(0.6);
 }
 
 /* ============================================================
@@ -486,7 +558,7 @@ img, button {
     position: absolute;
     width: 22px;
     height: 22px;
-    background-image: url('https://i.imgur.com/2U3Hh5q.png');
+    background-image: url('https://www.pngitem.com/pimgs/m/148-1481440_flower-petal-transparent-background-hd-png-download.png');
     background-size: cover;
     opacity: 0.8;
     animation: fall linear infinite;
@@ -516,14 +588,16 @@ img, button {
 }
 .heart {
     position: fixed;
-    width: 20px;
-    height: 20px;
-    background: url('https://i.imgur.com/ndE5EiW.png');
-    background-size: cover;
+    width: 22px;
+    height: 22px;
+    background-image: url('https://static.vecteezy.com/system/resources/previews/016/349/289/non_2x/simple-cute-pink-heart-drawing-illustration-free-png.png');
+    background-size: contain;
+    background-repeat: no-repeat;
     pointer-events: none;
-    opacity: 0;
+    opacity: 0.9;
     animation: heartFade 1.3s linear forwards;
 }
+
 
 @keyframes heartFade {
     0% { transform: scale(1) translateY(0); opacity: 0.9; }
@@ -546,4 +620,62 @@ img, button {
     100% {
         background-position: 0% 50%;
     }
+}
+.carousel-item {
+    perspective: 800px;
+}
+.carousel-item img {
+    transition: transform 0.3s ease, filter 0.4s ease;
+}
+.carousel-item.tilt-left img {
+    transform: rotateY(-6deg);
+}
+.carousel-item.tilt-right img {
+    transform: rotateY(6deg);
+}
+.carousel-item.visible::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    pointer-events: none;
+    background: radial-gradient(circle at center,
+        rgba(255,255,255,0.18),
+        transparent 70%
+    );
+    transition: 0.5s ease;
+}
+#bokeh-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+.carousel-item.visible img {
+    position: relative;
+    overflow: hidden;
+}
+
+.carousel-item.visible img::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -120%;
+    width: 80%;
+    height: 100%;
+    background: linear-gradient(120deg,
+        rgba(255,255,255,0) 0%,
+        rgba(255,255,255,0.45) 50%,
+        rgba(255,255,255,0) 100%
+    );
+    transform: skewX(-25deg);
+    animation: shimmerMove 2.6s infinite ease-in-out;
+}
+
+@keyframes shimmerMove {
+    0%   { left: -120%; }
+    100% { left: 120%; }
 }
