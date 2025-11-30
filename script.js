@@ -51,10 +51,13 @@ async function loadPersonInfo() {
 
         document.getElementById("person-relationship").textContent =
             personData["relationship"] || "Loved One";
-
+   
         if (personData["dob"]) {
             let age = calcAge(personData["dob"]);
             document.getElementById("person-age").textContent = `Age: ${age}`;
+
+         document.getElementById("person-gender").textContent =
+            personData["gender"] || "Unknown";
         }
 
     } catch (err) {
