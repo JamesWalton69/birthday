@@ -57,7 +57,8 @@ async function loadPersonInfo() {
             document.getElementById("person-age").textContent = `Age: ${age}`;
 
          document.getElementById("person-gender").textContent =
-            personData["gender"] || "Unknown";
+       personData["gender"] ? `Gender: ${personData["gender"]}` : "";
+
         }
 
     } catch (err) {
