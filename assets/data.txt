@@ -1,6 +1,7 @@
 name = Sharannya Karar
 DOB = 2010-12-01
 gender = Female
+relationship = Sister
 
-what belongs to me = Sister
+
 
