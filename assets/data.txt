@@ -1,7 +1,7 @@
 name = Sharannya Karar
 DOB = 2010-12-01
-gender = Alien
 relationship = Sister
+gender = Alien
 
 
 
